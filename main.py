@@ -66,7 +66,7 @@ class Game:
 
             # Top edge
             elif self.size - 1 > col > 0:
-                coords = [(row, col - 1), (row - 1, col), (row, col + 1)]
+                coords = [(row, col - 1), (row + 1, col), (row, col + 1)]
 
         # Bottom row cases
         elif row == self.size - 1:
@@ -80,7 +80,7 @@ class Game:
 
             # Bottom edge
             elif self.size - 1 > col > 0:
-                coords = [(row, col - 1), (row + 1, col), (row, col + 1)]
+                coords = [(row, col - 1), (row - 1, col), (row, col + 1)]
 
         # Middle cases
         elif self.size - 1 > col > 0 and self.size - 1 > row > 0:
@@ -93,12 +93,14 @@ class Game:
         if len(self.empty_coords) != 0:
             return False
 
+        flag = True
+
         for row_i, row in enumerate(self.board):
             for col_i, col in enumerate(row):
-                if col not in self._get_neighbours(row_i, col_i):
-                    return True
+                if col in (n := self._get_neighbours(row_i, col_i)):
+                    flag = False
 
-        return False
+        return flag
 
     # Movements
     def _left(self):  # sourcery skip: remove-redundant-if
@@ -189,9 +191,9 @@ class Game:
 
 
 def main():
-    game = Game(4)
+    game_size = int(input("Size: "))
+    game = Game(game_size)
     game.run()
-
 
 if __name__ == "__main__":
     main()
