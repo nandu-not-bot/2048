@@ -126,6 +126,7 @@ class Game:
                     row[i + 1] = 0
                     self.score += e + e
 
+            # Move all nums again for cleanup
             for i, e in enumerate(row):
                 while e != 0:
                     if i == 0:
