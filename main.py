@@ -1,7 +1,7 @@
-import pygame
 from random import choice
 
-pygame.init()
+BOARD_SIZE = 4
+
 
 class Game:
     def __init__(self, board_size):
@@ -12,21 +12,39 @@ class Game:
         self.score = 0
         self.moves = 0
 
-        self.display = pygame
-
     # Main Method
-    def run(self, move: int): # 1 - UP | 2 - DOWN | 3 - LEFT | 4 - RIGHT
-            if move == 1:
+    def run(self):
+        while not self._game_over():
+            self.print_board()
+            print(f"\nSCORE: {self.score}\tMOVES:{self.moves}")
+            print("\nW for UP\nS for DOWN\nA for LEFT\nD for RIGHT\nQ to QUIT\n")
+            move = input("> ")
+            if not move:
+
+                print("Invalid move!")
+                continue
+            move = move[-1].lower()
+            if move == "w":
                 self._up()
-            elif move == 2:
+            elif move == "s":
                 self._down()
-            elif move == 3:
+            elif move == "a":
                 self._left()
-            elif move == 4:
+            elif move == "d":
                 self._right()
+            elif move == "q":
+                break
+            else:
+                print("Invalid move!")
+                continue
 
             self.moves += 1
             self._add_new_num()
+
+        print("GAME OVER!")
+        print("\nFINAL BOARD\n")
+        self.print_board()
+        print(f"\nSCORE: {self.score}\tMOVES:{self.moves}")
 
     # Add new num
     def _add_new_num(self, nums: int = 1):
@@ -83,7 +101,7 @@ class Game:
 
         for row_i, row in enumerate(self.board):
             for col_i, col in enumerate(row):
-                if col in self._get_neighbours(row_i, col_i):
+                if col in (n := self._get_neighbours(row_i, col_i)):
                     flag = False
 
         return flag
@@ -91,18 +109,7 @@ class Game:
     # Movements
     def _left(self):  # sourcery skip: remove-redundant-if
         for row in self.board:
-
-            # Move nums
-            for i, e in enumerate(row):
-                while e != 0:
-                    if i == 0:
-                        break
-
-                    if row[i - 1] == 0:
-                        row[i - 1] = e
-                        row[i] = 0
-
-                    i -= 1
+            self._cleanup(row)
 
             # Add all the consecutives
             for i, e in enumerate(row):
@@ -114,17 +121,7 @@ class Game:
                     row[i + 1] = 0
                     self.score += e + e
 
-            # Move all nums again for cleanup
-            for i, e in enumerate(row):
-                while e != 0:
-                    if i == 0:
-                        break
-
-                    if row[i - 1] == 0:
-                        row[i - 1] = e
-                        row[i] = 0
-
-                    i -= 1
+            self._cleanup(row)
 
     def _right(self):
         self._rotate(2)
@@ -164,3 +161,37 @@ class Game:
                 row.reverse()
 
             self.board = temp_board
+
+    # Print Board
+    def print_board(self):
+        for row in self.board:
+            for num in row:
+                if num == 0:
+                    num = "_"
+                print(f"{num}\t", end="")
+
+            print("\n")
+
+    # Cleanup board [Move nums]
+    def _cleanup(rowself, row):
+        for i, e in enumerate(row):
+            while e != 0:
+                if i == 0:
+                    break
+
+                if row[i - 1] == 0:
+                    row[i - 1] = e
+                    row[i] = 0
+
+                i -= 1
+
+
+
+def main():
+    game_size = int(input("Size: "))
+    game = Game(game_size)
+    game.run()
+
+
+if __name__ == "__main__":
+    main()
