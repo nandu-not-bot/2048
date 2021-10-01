@@ -1,7 +1,7 @@
+import pygame
 from random import choice
 
-BOARD_SIZE = 4
-
+pygame.init()
 
 class Game:
     def __init__(self, board_size):
@@ -12,35 +12,21 @@ class Game:
         self.score = 0
         self.moves = 0
 
+        self.display = pygame
+
     # Main Method
-    def run(self):
-        while not self._game_over():
-            print("\n\n")
-            self.print_board()
-            print(f"\nSCORE: {self.score}\tMOVES:{self.moves}")
-            print("\nW for UP\nS for DOWN\nA for LEFT\nD for RIGHT\nQ to QUIT\n")
-            move = input("> ")[0].lower()
-            if move == "w":
+    def run(self, move: int): # 1 - UP | 2 - DOWN | 3 - LEFT | 4 - RIGHT
+            if move == 1:
                 self._up()
-            elif move == "s":
+            elif move == 2:
                 self._down()
-            elif move == "a":
+            elif move == 3:
                 self._left()
-            elif move == "d":
+            elif move == 4:
                 self._right()
-            elif move == "q":
-                break
-            else:
-                print("Invalid move!")
-                continue
 
             self.moves += 1
             self._add_new_num()
-
-        print("GAME OVER!")
-        print("\nFINAL BOARD\n")
-        self.print_board()
-        print(f"\nSCORE: {self.score}\tMOVES:{self.moves}")
 
     # Add new num
     def _add_new_num(self, nums: int = 1):
@@ -97,7 +83,7 @@ class Game:
 
         for row_i, row in enumerate(self.board):
             for col_i, col in enumerate(row):
-                if col in (n := self._get_neighbours(row_i, col_i)):
+                if col in self._get_neighbours(row_i, col_i):
                     flag = False
 
         return flag
@@ -178,22 +164,3 @@ class Game:
                 row.reverse()
 
             self.board = temp_board
-
-    # Print Board
-    def print_board(self):
-        for row in self.board:
-            for num in row:
-                if num == 0:
-                    num = "_"
-                print(f"{num}\t", end="")
-
-            print("\n")
-
-
-def main():
-    game_size = int(input("Size: "))
-    game = Game(game_size)
-    game.run()
-
-if __name__ == "__main__":
-    main()
